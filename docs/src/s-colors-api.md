@@ -4,7 +4,7 @@ These are the full docstrings for SargassumColors.jl.
 
 ## Index
 ```@index
-Pages = ["api.md"]
+Pages = ["s-colors-api.md"]
 ```
 
 ## Functions

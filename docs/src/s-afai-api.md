@@ -1,10 +1,10 @@
-# SargassumFromAFAI.jl API
+# SargassumFromAFAI API
 
 These are the full docstrings for SargassumFromAFAI.jl.
 
 ## Index
 ```@index
-Pages = ["api.md"]
+Pages = ["s-afai-api.md"]
 ```
 
 ## Functions

@@ -1,10 +1,10 @@
-# SargassumBOMB.jl API
+# SargassumBOMB API
 
 These are the full docstrings for SargassumBOMB.jl.
 
 ## Index
 ```@index
-Pages = ["api.md"]
+Pages = ["s-bomb-api.md"]
 ```
 
 ## Functions
