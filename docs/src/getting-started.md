@@ -20,32 +20,44 @@ Sargassum.jl was developed by the [Nonlinear Dynamics Group](https://nonlinear.e
 
 Julia 1.10 or later is required to use this package.  For most users, it is enough to run the following command in a terminal. See [here](https://github.com/JuliaLang/juliaup) for installation instructions if this is not sufficient.
 
-!!! details "Windows"
-    ```sh
-    winget install julia -s msstore
-    ```
+::: tabs
 
-!!! details "Mac/Linux"
-    ```sh
-    curl -fsSL https://install.julialang.org | sh
-    ```
+== Mac/Linux
+
+```sh
+curl -fsSL https://install.julialang.org | sh
+```
+
+== Windows
+
+```sh
+winget install julia -s msstore
+```
+
+:::
 
 ### Step 2: Installing Sargassum.jl
 
 !!! warning
     Sargassum.jl can be installed by running the following command in a terminal. Sargassum.jl is distributed without any raw data to keep the initial download size small. To run simulations, interpolants for ocean velocity, wind etc. are required. Default interpolants are provided for the year 2018 in the north Atlantic, but the raw data need to be downloaded (roughly 1.2 GB). The first command does this automatically and only needs to be run once. If you don't want to do this, e.g. because you have your own raw data or you don't need the simulation capabilities of the package, then run the second command.
 
-!!! details "Install with default interpolants (recommended)"
-    Run in the terminal, not in Julia!
-    ```sh
-    julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum; itps_default_construct(download = true);'
-    ```
+::: tabs
 
-!!! details "Install without default interpolants"
-    Run in the terminal, not in Julia!
-    ```sh
-    julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum;'
-    ```
+== Install with default interpolants (recommended)
+
+Run in the terminal, not in Julia!
+```sh
+julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum; itps_default_construct(download = true);'
+```
+
+== Install without default interpolants
+
+Run in the terminal, not in Julia!
+```sh
+julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum;'
+```
+
+:::
 
 Advanced Julia users can [add the package](https://pkgdocs.julialang.org/v1/managing-packages/#Adding-unregistered-packages) to their preferred environment.
 

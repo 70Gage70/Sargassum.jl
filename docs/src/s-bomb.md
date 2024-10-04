@@ -2,10 +2,6 @@
 
 [`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl) contains all of the core simulation functionality in Sargassum.jl and is the largest package in the ecosystem. To follow along with this tutorial, ensure that Sargassum.jl has been installed with the default interpolants as described in [Getting Started](getting-started.md). 
 
-### Contents 
-```@contents
-Pages = ["s-bomb.md"]
-```
 
 # First Steps
 
@@ -44,6 +40,7 @@ rtr2mat(rtr, "first_steps.mat")
 
 Check `pwd()` to see your current working directory, and find the file `first_steps.mat`.
 
+
 # Building your own RaftParameters
 
 ## Introduction to RaftParameters
@@ -67,9 +64,13 @@ Each of this kwargs is defined as follows. We describe the fields with minimal j
 
 ## Defining each argument
 
-### ics and n\_clumps\_max
+Click the relevant tab to see how each argument is constructed.
 
-First, we construct `ics`. As per the [definitions](#Introduction-to-RaftParameters), `ics` is an [`InitialConditions`](@ref) object. There are several constructors for different situations, but to create a rectangular arrangement, the appropriate constructor is 
+::: tabs
+
+== ics and n\_clumps\_max
+
+We construct `ics`, an [`InitialConditions`](@ref) object. There are several constructors for different situations, but to create a rectangular arrangement, the appropriate constructor is 
 
 ```julia
 InitialConditions(t_span, x_range, y_range; to_xy)
@@ -86,8 +87,7 @@ t_span = (t_initial, t_final)
 nothing # hide
 ```
 
-!!! details "What does `|>` mean?"
-    This is Julia's [pipe](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) operator. In brief, `g(f(x))` and `x |> f |> g` are equivalent.
+Recall that `|>` is Julia's [pipe](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) operator. In brief, `g(f(x))` and `x |> f |> g` are equivalent.
 
 Next, we need `x_range` and `y_range` which can be created quickly using `range(start, stop; length)`. Our example consisted of a 5 x 5 grid of clumps off the coast of Brazil. We can recreate this via
 
@@ -110,34 +110,31 @@ n_clumps_max = 25
 nothing # hide
 ```
 
-### clumps
+== clumps
 
-Now we construct `clumps`. As per the [definitions](#Introduction-to-RaftParameters), `clumps` is an [`ClumpParameters`](@ref) object. Various physics constants can be set as desired e.g. the buoyancy of the clumps. For now, we will use the defaults and therefore simply have
+We construct `clumps`, a [`ClumpParameters`](@ref) object. Various physics constants can be set as desired e.g. the buoyancy of the clumps. For now, we will use the defaults and therefore simply have
 
 ```@example s-bomb-2
 clumps = ClumpParameters()
 ```
 
-### springs
+== springs
 
-Now we construct `springs`. As per the [definitions](#Introduction-to-RaftParameters), `springs` is an [`AbstractSpring`](@ref) object. Built in to Sargassum.jl are two basic spring types, [`HookeSpring`](@ref) with a traditional Hookian stiffness and [`BOMBSpring`](@ref) with an adaptive stiffness. We will use the `BOMBSpring` here. Its constructor is 
+We construct `springs`, a [`AbstractSpring`](@ref) object. Built in to Sargassum.jl are two basic spring types, [`HookeSpring`](@ref) with a traditional Hookian stiffness and [`BOMBSpring`](@ref) with an adaptive stiffness. We will use the `BOMBSpring` here. Its constructor is 
 
 ```julia
 BOMBSpring(A, L)
 ```
 
-Here, `A` represents the amplitude of the stiffness, and `L` represents the natural length of the spring. We will take the amplitude to be `A = 1`. A convenient way to obtain `L` is using the function [`ΔL`](@ref), which takes an `InitialConditions` as its only argument and computes an appropriate natural spring length based on the average separation of clumps in their initial state. We therefore have
+Here, `A` represents the amplitude of the stiffness, and `L` represents the natural length of the spring. We will take the amplitude to be `A = 1`. A convenient way to obtain `L` is using the function [`ΔL`](@ref), which takes an `InitialConditions` as its only argument and computes an appropriate natural spring length based on the average separation of clumps in their initial state. Recall that `Δ` can be entered by typing `\Delta` and then pressing `TAB` on your keyboard. We therefore have
 
 ```@example s-bomb-2
 springs = BOMBSpring(1.0, ΔL(ics))
 ```
 
-!!! details "How do I type `Δ`?"
-    Type `\Delta` and then press `TAB` on your keyboard.
+== connections
 
-### connections
-
-Now we construct `connections`. As per the [definitions](#Introduction-to-RaftParameters), `connections` is an [`AbstractConnections`](@ref) object. Several connections types are available, here will will use [`ConnectionsNearest`](@ref) to connect each clump to its 2 nearest neighbors. The signature of `ConnectionsNearest` is
+We construct `connections`, a [`AbstractConnections`](@ref) object. Several connections types are available, here will will use [`ConnectionsNearest`](@ref) to connect each clump to its 2 nearest neighbors. The signature of `ConnectionsNearest` is
 
 ```julia
 ConnectionsNearest(n_clumps_max, neighbors)
@@ -149,21 +146,23 @@ Hence, we have
 connections = ConnectionsNearest(n_clumps_max, 2)
 ```
 
-### gd_model
+== gd_model
 
-Now we construct `gd_model`. As per the [definitions](#Introduction-to-RaftParameters), `gd_model` is an [`AbstractGrowthDeathModel`](@ref) object. Built in to Sargassum.jl are two basic biological model types, [`ImmortalModel`](@ref) where clumps do not grow or die by biological effects and [`BrooksModel`](@ref) with a full model based on [Brooks et. al. (2018)](https://www.int-res.com/abstracts/meps/v599/p1-18/). We will use the `ImmortalModel` here, which has a constructor with `n_clumps_max` as its only argument. Hence, we have
+We construct `gd_model`, an [`AbstractGrowthDeathModel`](@ref) object. Built in to Sargassum.jl are two basic biological model types, [`ImmortalModel`](@ref) where clumps do not grow or die by biological effects and [`BrooksModel`](@ref) with a full model based on [Brooks et. al. (2018)](https://www.int-res.com/abstracts/meps/v599/p1-18/). We will use the `ImmortalModel` here, which has a constructor with `n_clumps_max` as its only argument. Hence, we have
 
 ```@example s-bomb-2
 gd_model = ImmortalModel(n_clumps_max)
 ```
 
-### land
+== land
 
-Now we construct `land`. As per the [definitions](#Introduction-to-RaftParameters), `land` is an [`AbstractLand`](@ref) object. Built in to Sargassum.jl are two basic land model types, [`NoLand`](@ref) where clumps do not interact with land and [`Land`](@ref) where clumps die when their position is within a polygon that defines land locations. We will use the `Land` here, which has a constructor with no arguments. Hence, we have
+We construct `land`, an [`AbstractLand`](@ref) object. Built in to Sargassum.jl are two basic land model types, [`NoLand`](@ref) where clumps do not interact with land and [`Land`](@ref) where clumps die when their position is within a polygon that defines land locations. We will use the `Land` here, which has a constructor with no arguments. Hence, we have
 
 ```@example s-bomb-2
 land = Land()
 ```
+
+:::
 
 ## Application
 
