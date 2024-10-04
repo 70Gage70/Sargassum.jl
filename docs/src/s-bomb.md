@@ -26,7 +26,7 @@ Observe that `RaftParameters` prints out information about its contents, which w
 rtr = simulate(rp)
 ```
 
-The output of `simulate` is a [`RaftTrajectories`](@ref) object. This holds all of the information about each clump's trajectory during the simulation. The easiest way to interpret the results of the simulation is to create a plot. We can use the [`trajectory`](@ref) function to get a plot with some default arguments already chosen for us.
+The output of `simulate` is a [`RaftTrajectory`](@ref) object. This holds all of the information about each clump's trajectory during the simulation. The easiest way to interpret the results of the simulation is to create a plot. We can use the [`trajectory`](@ref) function to get a plot with some default arguments already chosen for us.
 
 ```@example s-bomb-1
 trajectory(rtr, limits = (-60, -45, 0, 15)) # limits = (lon_min, lon_max, lat_min, lat_max)
