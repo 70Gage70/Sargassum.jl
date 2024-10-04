@@ -19,7 +19,7 @@ using CairoMakie
 makedocs(
     sitename = "Sargassum.jl",
     format = Documenter.HTML(),
-    modules = [Sargassum],
+    modules = [Sargassum, SargassumBOMB, SargassumColors, SargassumFromAFAI, SargassumInterface],
     pages = [
         "Home" => "index.md",
         "Getting Started" => "getting-started.md",
@@ -29,7 +29,8 @@ makedocs(
                 "API" => "s-interface-api.md"],
             "SargassumBOMB.jl" => [
                 "Tutorial" => "s-bomb.md",
-                "API" => "s-bomb-api.md"],
+                "API" => "s-bomb-api.md",
+                "Examples API" => "s-bomb-examples-api.md"],
             "SargassumFromAFAI.jl" => [
                 "Tutorial" => "s-afai.md",
                 "API" => "s-afai-api.md"],

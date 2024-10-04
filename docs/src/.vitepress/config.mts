@@ -87,6 +87,7 @@ export default defineConfig({
         items: [
           { text: 'Tutorial', link: '/s-bomb' },
           { text: 'API', link: '/s-bomb-api' },
+          { text: 'Examples API', link: '/s-bomb-examples-api' },
         ],
       },
       { text: 'SargassumFromAFAI', link: '/s-afai',

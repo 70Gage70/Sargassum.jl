@@ -10,17 +10,20 @@ Pages = ["s-colors-api.md"]
 ## Functions
 ```@autodocs
 Modules = [SargassumColors]
+Private = false
 Order = [:function]
 ``` 
 
 ## Types
 ```@autodocs
 Modules = [SargassumColors]
+Private = false
 Order = [:type]
 ``` 
 
 ## Constants
 ```@autodocs
 Modules = [SargassumColors]
+Private = false
 Order = [:constant]
 ``` 
