@@ -10,11 +10,15 @@ makedocs(
         # build_vitepress = false, # LOCAL ONLY
         repo = "github.com/70Gage70/Sargassum.jl",
         devbranch = "master", 
-        devurl = "dev", 
+        devurl = "dev";
     ),
     modules = [Sargassum],
+    warnonly = true,
+    checkdocs=:all,
+    draft=false,
+    source="src", 
+    build="build",
     # clean = false, # LOCAL ONLY
-    warnonly = true
 )
 
 ### DOCUMENTER
