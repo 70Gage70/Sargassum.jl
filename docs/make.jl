@@ -6,12 +6,12 @@ using CairoMakie
 makedocs(
     sitename = "Sargassum.jl",
     format = MarkdownVitepress(
-        md_output_path = ".", # LOCAL ONLY
-        build_vitepress = false, # LOCAL ONLY
+        # md_output_path = ".", # LOCAL ONLY
+        # build_vitepress = false, # LOCAL ONLY
         repo = "github.com/70Gage70/Sargassum.jl.git",
     ),
     modules = [Sargassum],
-    clean = false, # LOCAL ONLY
+    # clean = false, # LOCAL ONLY
     warnonly = true
 )
 
