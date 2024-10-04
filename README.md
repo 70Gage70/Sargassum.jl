@@ -1,19 +1,21 @@
 # Sargassum.jl
 
+`Sargassum.jl` is a meta package for the [Julia](https://julialang.org/) programming language that bundles the following component packages all in one location.
+
+- [`SargassumInterface.jl`](https://github.com/70Gage70/SargassumInterface.jl): High level, zero-code interface.
+- [`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl): Main modelling and simulation tools.
+- [`SargassumFromAFAI.jl`](https://github.com/70Gage70/SargassumFromAFAI.jl): Downloading raw AFAI data and generating Sargassum distribution maps.
+- [`SargassumColors.jl`](https://github.com/70Gage70/SargassumColors.jl): Color maps and general plot styling.
+
+Each of these packages can be used individually, but most end-users will want to simply using `Sargassum.jl`
+to have all functionality in one location. Together, this represents a fully featured Sargassum analysis toolkit.
+
+Sargassum.jl was developed by the [Nonlinear Dynamics Group](https://nonlinear.earth.miami.edu/index.html) at the University of Miami. 
+
+# Documentation
+
 Documentation coming soon.
 
-First, install Julia as per the instructions [here](https://github.com/JuliaLang/juliaup).
+# Citation
 
-Execute the following command in the terminal to install. 
-```sh
-julia -e 'file = download("https://raw.githubusercontent.com/70Gage70/Sargassum.jl/master/src/installer.jl"); include(file)'
-```
-Sargassum.jl depends on some of the heaviest Julia packages, and may take several minutes to precompile.
-
-The highest level usage is provided by [SargassumInterface.jl](https://github.com/70Gage70/SargassumInterface.jl). This is reexported by Sargassum.jl, in a terminal simply run
-
-```sh
-julia -e 'import Pkg; Pkg.activate(temp = true); Pkg.add("Sargassum"); using Sargassum; interface()'
-```
-
-Be aware that if this is your first time opening the interface, it will take several minutes to load. In particular, raw data for the default interpolants will be downloaded automatically (roughly 1.2 GB of NetCDF files). These are required to run the interface initially; custom interpolants can be loaded later. 
+Citation coming soon.

@@ -2,8 +2,7 @@
 
 ## Introduction
 
-`Sargassum.jl` is a meta package for the [Julia](https://julialang.org/) programming language that bundles the following component 
-packages all in one location.
+`Sargassum.jl` is a meta package for the [Julia](https://julialang.org/) programming language that bundles the following component packages all in one location.
 
 - [`SargassumInterface.jl`](https://github.com/70Gage70/SargassumInterface.jl): High level, zero-code interface.
 - [`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl): Main modelling and simulation tools.

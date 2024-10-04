@@ -1,188 +1,191 @@
 # SargassumBOMB.jl
 
-# First Steps
+[`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl) contains all of the core simulation functionality in Sargassum.jl and is the largest package in the ecosystem. To follow along with this tutorial, ensure that Sargassum.jl has been installed with the default interpolants as described in [Getting Started](getting-started.md). 
 
-Here we will learn the basic workflow of SargassumBOMB by integrating a small raft. 
-You can follow along with this tutorial by executing each code block in the REPL or skip 
-ahead to the copy-pastable example to execute everything all at once.
-
+### Contents 
 ```@contents
-Pages = ["first-steps.md"]
+Pages = ["s-bomb.md"]
 ```
 
-## Full Tutorial
+# First Steps
 
-Before doing anything, we should make sure to use the package:
+Before doing anything else, ensure that the package is loaded into your Julia session,
 
 ```julia
-using SargassumBOMB
+using Sargassum
 ```
 
 The highest level function in the package is [`simulate`](@ref), which takes one mandatory argument, a [`RaftParameters`](@ref) object. The general plan is therefore to build the `RaftParameters` object that defines the problem we want to solve. Then, we will simply invoke `simulate`.
 
-A `RaftParameters` constructor needs the following fields
+To get up and running as fast as possible, we can use the built-in [`Examples`](s-bomb-examples-api.md) module to generate our `RaftParameters`.
 
-- The time span of the simulation, of the form `(t_initial, t_final)`, where the times are measured in days since January 1, 2018 by default.
-- Initial conditions; the actual coordinates of the clumps initially. Contained in an [`InitialConditions`](@ref) object.
-- Physics parameters defining each (identical) clump; buoyancy, windage etc. Contained in a [`ClumpParameters`](@ref) object.
-- Spring parameters defining each (identical) spring; length and stiffness function. Contained in a [`SpringParameters`](@ref) object.
-- Connections defining how the clumps are connected by the springs. Contained in an [`AbstractConnections`](@ref) object.
-- A model controling how clumps grow and die due to biological effects. Contained in an [`AbstractGrowthDeathModel`](@ref) object.
-- A land model; how clumps should behave when reaching land. Contained in an [`AbstractLand`](@ref) object.
-
-First, the time of the simulation. By default, all the interpolants (wind, currents, etc.) all start on January 1, 2018 and end on December 31, 2018. Supposing that we want to integrate for the month of January, we should take `tspan = (0, 31)`. 
-
-```julia
-t_initial = 0
-t_final = 31
-tspan = (t_initial, t_final)
-```
-Next, the clump initial conditions. Important to note is that all calculations are performed on a flat plane, in equirectangular coordinates but it is often more convenient to begin with definitions in spherical coordinates. 
-Helper functions [`sph2xy`](@ref) and [`xy2sph`](@ref) are provided with a variety of methods to make conversion between both worlds easy. 
-Such conversions require reference longitudes and latitudes contained in an [`EquirectangularReference`](@ref) object. 
-The default is [`EQR`](@ref) which has a reference longitude of $75\degree\,\text{W}$  and $10\degree\,\text{N}$. 
-
-We will place the clumps in a rectangular arrangement, with longitudes in $[55\degree\,\text{W}, 50\degree\,\text{W}]$ and latitudes in $[5\degree\,\text{N}, 10\degree\,\text{N}]$. 
-Note that we use the convention that the western and southern directions are negative. 
-We will place 5 clumps in each direction for a total of 25 clumps in the simulation. The function [`InitialConditions`](@ref) will handle the preprocessing.
-
-```julia
-lon_range = range(-55.0, -50.0, length = 5)
-lat_range = range(5.0, 10.0, length = 5)
-ics = InitialConditions(lon_range, lat_range, ref = EQR)
+```@example s-bomb-1
+using Sargassum # hide
+rp = Examples.QuickRaftParameters()
 ```
 
-Next, the clump parameters; we'll stick with the defaults.
+Observe that `RaftParameters` prints out information about its contents, which we will discuss further later. For now, note that the initial conditions inform us that we are simulating from April 13, 2018 to April 15, 2018 with 25 clumps. A "clump" is a discrete chunk of Sargassum. In the language of Sargassum.jl, a "Raft" is a collection of any number of clumps (including a single clump). Each clump in a raft shares a number of physics parameters via [`ClumpParameters`](@ref). For now, we will proceed with the simulation.
+
+```@example s-bomb-1
+rtr = simulate(rp)
+```
+
+The output of `simulate` is a [`RaftTrajectories`](@ref) object. This holds all of the information about each clump's trajectory during the simulation. The easiest way to interpret the results of the simulation is to create a plot. We can use the [`trajectory`](@ref) function to get a plot with some default arguments already chosen for us.
+
+```@example s-bomb-1
+trajectory(rtr, limits = (-60, -45, 0, 15)) # limits = (lon_min, lon_max, lat_min, lat_max)
+```
+
+We see a small amount of movement off the coast of Brazil. Suppose we want to save this data for future analysis; for this we can use the [`rtr2mat`](@ref) function to generate a `.mat` file which can be read in [MATLAB](https://www.mathworks.com/help/matlab/ref/load.html), [Python](https://github.com/skjerns/mat7.3), [Julia](https://github.com/JuliaIO/MAT.jl) and other languages with the appropriate package.
 
 ```julia
+rtr2mat(rtr, "first_steps.mat")
+```
+
+Check `pwd()` to see your current working directory, and find the file `first_steps.mat`.
+
+# Building your own RaftParameters
+
+## Introduction to RaftParameters
+
+We now provide a walkthrough of the construction of a `RaftParameters` object. We will essentially recreate `Examples.QuickRaftParameters()` to show how this is done. The signature of the basic `RaftParameters` constructor is
+
+```julia
+RaftParameters(; ics, clumps, springs, connections, gd_model, land, n_clumps_max, fast_raft)
+```
+
+Each of this kwargs is defined as follows. We describe the fields with minimal jargon here, see [`RaftParameters`](@ref) for the full documentation.
+
+- `ics`: The initial conditions of the simulation, including coordinates and simulation time span. Contained in an [`InitialConditions`](@ref).
+- `clumps`: Physics parameters defining each (identical) clump; buoyancy, windage etc. Contained in a [`ClumpParameters`](@ref) object.
+- `springs`: Spring parameters defining each (identical) spring. Contained in a [`AbstractSpring`](@ref) object.
+- `connections`: Connections defining how the clumps are connected by the springs. Contained in an [`AbstractConnections`](@ref) object.
+- `gd_model`: A model controling how clumps grow and die due to biological effects. Contained in an [`AbstractGrowthDeathModel`](@ref) object.
+- `land`: A land model; how clumps should behave when reaching land. Contained in an [`AbstractLand`](@ref) object.
+- `n_clumps_max`: The maximum number of clumps allowed to exist across the entire simulation. Should be a positive integer.
+- `fast_raft`: A boolean flag that controls whether a "total" interpolant is created before the integration to save time on multiple evaluations. This is technical, and we omit the discussion for now. The default value of this flag is `false` and we leave this set as is.
+
+## Defining each argument
+
+### ics and n\_clumps\_max
+
+First, we construct `ics`. As per the [definitions](#Introduction-to-RaftParameters), `ics` is an [`InitialConditions`](@ref) object. There are several constructors for different situations, but to create a rectangular arrangement, the appropriate constructor is 
+
+```julia
+InitialConditions(t_span, x_range, y_range; to_xy)
+```
+
+The integration time span is controlled by `t_span`, of the form `(t_initial, t_final)`, where times are measured in days since `January, 1, 2000` by default (see [`T_REF`](@ref)). We want to integrate from April 13, 2018 to April 15, 2018, but counting the days would be cumbersome. For this, we can use Julia's built-in [`Dates`](https://docs.julialang.org/en/v1/stdlib/Dates/) module to easily define times as `DateTime(year, month, day)` along with Sargassum.jl's [`datetime2time`](@ref) function to do the conversion automatically.
+
+```@example s-bomb-2
+using Sargassum # hide
+using Dates
+t_initial = DateTime(2018, 4, 13) |> datetime2time
+t_final = DateTime(2018, 4, 15) |> datetime2time
+t_span = (t_initial, t_final)
+nothing # hide
+```
+
+!!! details "What does `|>` mean?"
+    This is Julia's [pipe](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) operator. In brief, `g(f(x))` and `x |> f |> g` are equivalent.
+
+Next, we need `x_range` and `y_range` which can be created quickly using `range(start, stop; length)`. Our example consisted of a 5 x 5 grid of clumps off the coast of Brazil. We can recreate this via
+
+```@example s-bomb-2
+x_range = range(-55.0, -50.0, length = 5)
+y_range = range(5.0, 10.0, length = 5)
+nothing # hide
+```
+
+Note that we have defined our ranges in terms of longitude/latitude. The optional argument `to_xy` of `InitialConditions` should therefore be set to `true` to automatically convert these spherical coordinates to equirectangular coordinates.
+
+```@example s-bomb-2
+ics = InitialConditions(t_span, x_range, y_range, to_xy = true)
+```
+
+While we're here, we can define the maximum number of clumps we want to allow. This example contains no biological effects, so the maximum number of clumps will simply be equal to the initial number of clumps, 25.
+
+```@example s-bomb-2
+n_clumps_max = 25
+nothing # hide
+```
+
+### clumps
+
+Now we construct `clumps`. As per the [definitions](#Introduction-to-RaftParameters), `clumps` is an [`ClumpParameters`](@ref) object. Various physics constants can be set as desired e.g. the buoyancy of the clumps. For now, we will use the defaults and therefore simply have
+
+```@example s-bomb-2
 clumps = ClumpParameters()
 ```
 
-Next, the spring parameters; we'll use a constant spring stiffness of 1.0 and a spring length provided automatically by the function [`ΔL`](@ref). 
+### springs
+
+Now we construct `springs`. As per the [definitions](#Introduction-to-RaftParameters), `springs` is an [`AbstractSpring`](@ref) object. Built in to Sargassum.jl are two basic spring types, [`HookeSpring`](@ref) with a traditional Hookian stiffness and [`BOMBSpring`](@ref) with an adaptive stiffness. We will use the `BOMBSpring` here. Its constructor is 
 
 ```julia
-spring_k(k) = 1.0 # note that `spring_k` is actually a function even though the stiffness is constant
-spring_L = ΔL(lon_range, lat_range, ref = EQR)
-springs = SpringParameters(spring_k, spring_L)
+BOMBSpring(A, L)
 ```
 
-Next, the connections; we'll connect every clump to every other clump using [`ConnectionsFull`](@ref).
+Here, `A` represents the amplitude of the stiffness, and `L` represents the natural length of the spring. We will take the amplitude to be `A = 1`. A convenient way to obtain `L` is using the function [`ΔL`](@ref), which takes an `InitialConditions` as its only argument and computes an appropriate natural spring length based on the average separation of clumps in their initial state. We therefore have
 
-```julia
-connections = ConnectionsFull()
+```@example s-bomb-2
+springs = BOMBSpring(1.0, ΔL(ics))
 ```
 
-Next, the growth and death model; we'll use the [`ImmortalModel`](@ref) so no clumps grow or die to keep things simple.
+!!! details "How do I type `Δ`?"
+    Type `\Delta` and then press `TAB` on your keyboard.
+
+### connections
+
+Now we construct `connections`. As per the [definitions](#Introduction-to-RaftParameters), `connections` is an [`AbstractConnections`](@ref) object. Several connections types are available, here will will use [`ConnectionsNearest`](@ref) to connect each clump to its 2 nearest neighbors. The signature of `ConnectionsNearest` is
 
 ```julia
-gd_model = ImmortalModel()
+ConnectionsNearest(n_clumps_max, neighbors)
 ```
 
-Finally, the land model; we'll use the default [`Land`](@ref) object.
+Hence, we have
 
-```julia
+```@example s-bomb-2
+connections = ConnectionsNearest(n_clumps_max, 2)
+```
+
+### gd_model
+
+Now we construct `gd_model`. As per the [definitions](#Introduction-to-RaftParameters), `gd_model` is an [`AbstractGrowthDeathModel`](@ref) object. Built in to Sargassum.jl are two basic biological model types, [`ImmortalModel`](@ref) where clumps do not grow or die by biological effects and [`BrooksModel`](@ref) with a full model based on [Brooks et. al. (2018)](https://www.int-res.com/abstracts/meps/v599/p1-18/). We will use the `ImmortalModel` here, which has a constructor with `n_clumps_max` as its only argument. Hence, we have
+
+```@example s-bomb-2
+gd_model = ImmortalModel(n_clumps_max)
+```
+
+### land
+
+Now we construct `land`. As per the [definitions](#Introduction-to-RaftParameters), `land` is an [`AbstractLand`](@ref) object. Built in to Sargassum.jl are two basic land model types, [`NoLand`](@ref) where clumps do not interact with land and [`Land`](@ref) where clumps die when their position is within a polygon that defines land locations. We will use the `Land` here, which has a constructor with no arguments. Hence, we have
+
+```@example s-bomb-2
 land = Land()
 ```
 
-We can therefore construct our `RaftParameters`,
+## Application
 
-```julia
+Now that all the appropriate arguments are defined, we simply use the `RaftParameters` constructor.
+
+```@example s-bomb-2
 rp = RaftParameters(
-    tspan = tspan,
     ics = ics,
     clumps = clumps,
     springs = springs,
     connections = connections,
     gd_model = gd_model,
-    land = land
+    land = land,
+    n_clumps_max = n_clumps_max
 )
 ```
 
-And run our simulation,
+And now we can simulate and plot as earlier:
 
-```julia
+```@example s-bomb-2
 rtr = simulate(rp)
+trajectory(rtr, limits = (-60, -45, 0, 15))
 ```
 
-The output of `simulate` is, by default, a [`RaftParameters`](@ref) object, which neatly organizes all of the individual clump trajectories including the possibilities that some clumps grow and die at arbitrary times.
-
-Finally, we can quickly visualize our trajectory using the [`geo_axis!`](@ref), [`trajectory!`](@ref) and [`land!`](@ref) functions. These integrate into the `Makie` ecosystem; we'll use `Makie` and `CairoMakie` to quickly examine the trajectories.
-If these packages aren't in your environment, run
-
-```julia
-import Pkg
-Pkg.add(Makie)
-Pkg.add(CairoMakie)
-```
-
-We can then make our plots
-
-```julia
-using Makie, CairoMakie
-
-fig = default_fig()
-
-limits = (-100, -40, 5, 35)
-ax = geo_axis(fig[1, 1], limits = limits, title = L"\mathrm{First Steps}")
-
-trajectory!(ax, rtr)
-
-land!(ax)
-
-fig
-```
-
-### TODO: ADD FIGURE
-
-## Copy-pastable Code
-
-```julia
-using SargassumBOMB
-
-t_initial = 0
-t_final = 31
-tspan = (t_initial, t_final)
-
-lon_range = range(-55.0, -50.0, length = 5)
-lat_range = range(5.0, 10.0, length = 5)
-ics = InitialConditions(lon_range, lat_range, ref = EQR)
-
-clumps = ClumpParameters()
-
-spring_k = k -> 1.0
-spring_L = ΔL(lon_range, lat_range, ref = EQR)
-springs = SpringParameters(spring_k, spring_L)
-
-connections = ConnectionsFull()
-
-gd_model = ImmortalModel()
-
-land = Land()
-
-rp = RaftParameters(
-    tspan = tspan,
-    ics = ics,
-    clumps = clumps,
-    springs = springs,
-    connections = connections,
-    gd_model = gd_model,
-    land = land
-)
-
-rtr = simulate(rp)
-
-### plotting
-
-using Makie, CairoMakie
-
-fig = default_fig()
-
-limits = (-100, -40, 5, 35)
-ax = geo_axis(fig[1, 1], limits = limits, title = L"\mathrm{First Steps}")
-
-trajectory!(ax, rtr)
-
-land!(ax)
-
-fig
-```
+Comparing this to our earlier example, we see that they are indeed identical.
