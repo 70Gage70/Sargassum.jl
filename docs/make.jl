@@ -9,6 +9,8 @@ makedocs(
         # md_output_path = ".", # LOCAL ONLY
         # build_vitepress = false, # LOCAL ONLY
         repo = "github.com/70Gage70/Sargassum.jl.git",
+        devbranch = "master", 
+        devurl = "dev", 
     ),
     modules = [Sargassum],
     # clean = false, # LOCAL ONLY
@@ -45,5 +47,8 @@ makedocs(
 deploydocs(;
     repo = "github.com/70Gage70/Sargassum.jl.git",
     target = "build", 
-    versions = nothing
+    versions = nothing,
+    branch = "gh-pages",
+    devbranch = "master",
+    push_preview = true
 )
