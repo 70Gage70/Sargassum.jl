@@ -29,25 +29,6 @@ makedocs(
     source="src", 
     build="build",
     # clean = false, # LOCAL ONLY
-    pages = [
-        "Home" => "index.md",
-        "Getting Started" => "getting-started.md",
-        "Packages" => [
-            "SargassumInterface.jl" => [
-                "Tutorial" => "s-interface.md",
-                "API" => "s-interface-api.md"],
-            "SargassumBOMB.jl" => [
-                "Tutorial" => "s-bomb.md",
-                "API" => "s-bomb-api.md",
-                "Examples API" => "s-bomb-examples-api.md"],
-            "SargassumFromAFAI.jl" => [
-                "Tutorial" => "s-afai.md",
-                "API" => "s-afai-api.md"],
-            "SargassumColors.jl" => [
-                "Tutorial" => "s-colors.md",
-                "API" => "s-colors-api.md"],
-        ]
-    ]
 )
 
 ### DOCUMENTER
