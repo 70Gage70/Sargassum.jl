@@ -5,8 +5,10 @@ on:
     branches:
       - main
       - master
-    tags: '*'
+    tags: ['*']
   pull_request:
+
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -14,21 +16,22 @@ permissions:
   id-token: write
   actions: write
 
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build:
-    permissions:
-      contents: write
-      pull-requests: read
-      statuses: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: julia-actions/setup-julia@v2
-        with:
-          version: '1.10'
-      - uses: julia-actions/cache@v1
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Julia
+        uses: julia-actions/setup-julia@v1
+      - name: Pull Julia cache
+        uses: julia-actions/cache@v1
       - name: Install dependencies
-        run: julia --project=docs/ -e 'using Pkg; Pkg.Registry.add("General"); Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/70Gage70/SargassumRegistry")); Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); using Sargassum; itps_default_construct(download = true)'
+        run: julia --project=docs -e 'using Pkg; Pkg.Registry.add("General"); Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/70Gage70/SargassumRegistry")); Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); using Sargassum; itps_default_construct(download = true)'
       - name: Build and deploy docs
         uses: julia-actions/julia-docdeploy@v1
         env:
