@@ -48,7 +48,7 @@ Check `pwd()` to see your current working directory, and find the file `first_st
 We now provide a walkthrough of the construction of a `RaftParameters` object. We will essentially recreate `Examples.QuickRaftParameters()` to show how this is done. The signature of the basic `RaftParameters` constructor is
 
 ```julia
-RaftParameters(; ics, clumps, springs, connections, gd_model, land, n_clumps_max, fast_raft)
+RaftParameters(; ics, clumps, springs, connections, gd_model, land, n_clumps_max, geometry = true, fast_raft = false)
 ```
 
 Each of this kwargs is defined as follows. We describe the fields with minimal jargon here, see [`RaftParameters`](@ref) for the full documentation.
@@ -60,7 +60,8 @@ Each of this kwargs is defined as follows. We describe the fields with minimal j
 - `gd_model`: A model controling how clumps grow and die due to biological effects. Contained in an [`AbstractGrowthDeathModel`](@ref) object.
 - `land`: A land model; how clumps should behave when reaching land. Contained in an [`AbstractLand`](@ref) object.
 - `n_clumps_max`: The maximum number of clumps allowed to exist across the entire simulation. Should be a positive integer.
-- `fast_raft`: A boolean flag that controls whether a "total" interpolant is created before the integration to save time on multiple evaluations. This is technical, and we omit the discussion for now. The default value of this flag is `false` and we leave this set as is.
+- `geometry`: A Boolean flag. If true, corrections are applied to account for the spherical geometry of the Earth. The default value of this is `true` and we will leave it alone for now.
+- `fast_raft`: A Boolean flag that controls whether a "total" interpolant is created before the integration to save time on multiple evaluations. This is technical, and we omit the discussion for now. The default value of this flag is `false` and we leave this set as is.
 
 ## Defining each argument
 
@@ -76,18 +77,16 @@ We construct `ics`, an [`InitialConditions`](@ref) object. There are several con
 InitialConditions(t_span, x_range, y_range; to_xy)
 ```
 
-The integration time span is controlled by `t_span`, of the form `(t_initial, t_final)`, where times are measured in days since `January, 1, 2000` by default (see [`T_REF`](@ref)). We want to integrate from April 13, 2018 to April 15, 2018, but counting the days would be cumbersome. For this, we can use Julia's built-in [`Dates`](https://docs.julialang.org/en/v1/stdlib/Dates/) module to easily define times as `DateTime(year, month, day)` along with Sargassum.jl's [`datetime2time`](@ref) function to do the conversion automatically.
+The integration time span is controlled by `t_span`, of the form `(t_initial, t_final)` and we want to integrate from April 13, 2018 to April 15, 2018. We can use Julia's built-in [`Dates`](https://docs.julialang.org/en/v1/stdlib/Dates/) module to easily define times as `DateTime(year, month, day)`:
 
 ```@example s-bomb-2
 using Sargassum # hide
 using Dates
-t_initial = DateTime(2018, 4, 13) |> datetime2time
-t_final = DateTime(2018, 4, 15) |> datetime2time
+t_initial = DateTime(2018, 4, 13)
+t_final = DateTime(2018, 4, 15)
 t_span = (t_initial, t_final)
 nothing # hide
 ```
-
-Recall that `|>` is Julia's [pipe](https://docs.julialang.org/en/v1/manual/functions/#Function-composition-and-piping) operator. In brief, `g(f(x))` and `x |> f |> g` are equivalent.
 
 Next, we need `x_range` and `y_range` which can be created quickly using `range(start, stop; length)`. Our example consisted of a 5 x 5 grid of clumps off the coast of Brazil. We can recreate this via
 
