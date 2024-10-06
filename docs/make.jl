@@ -18,7 +18,7 @@ makedocs(
     format = MarkdownVitepress(
         # md_output_path = ".", # LOCAL ONLY
         # build_vitepress = false, # LOCAL ONLY
-        repo = "github.com/70Gage70/Sargassum.jl",
+        repo = "https://github.com/70Gage70/Sargassum.jl",
         devbranch = "master", 
         devurl = "dev";
     ),
@@ -59,7 +59,7 @@ makedocs(
 # )
 
 deploydocs(;
-    repo = "github.com/70Gage70/Sargassum.jl",
+    repo = "https://github.com/70Gage70/Sargassum.jl",
     target = "build", 
     versions = nothing,
     branch = "gh-pages",
