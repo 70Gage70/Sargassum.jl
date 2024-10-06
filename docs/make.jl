@@ -13,22 +13,23 @@ using CairoMakie
 # end
 
 ### VITEPRESS
-makedocs(
+makedocs(;
     sitename = "Sargassum.jl",
-    format = MarkdownVitepress(
+    authors = "Gage Bonner",
+    modules = [Sargassum],
+    checkdocs=:all,
+    format = DocumenterVitepress.MarkdownVitepress(
+        repo = "https://github.com/70Gage70/Sargassum.jl",
         # md_output_path = ".", # LOCAL ONLY
         # build_vitepress = false, # LOCAL ONLY
-        repo = "https://github.com/70Gage70/Sargassum.jl",
         devbranch = "master", 
         devurl = "dev";
     ),
-    modules = [Sargassum],
+    draft = false,
+    source = "src", 
+    build = "build",
     warnonly = true,
-    checkdocs=:all,
-    draft=false,
-    source="src", 
-    build="build",
-    # clean = false, # LOCAL ONLY
+    # clean = true, # LOCAL ONLY
 )
 
 ### DOCUMENTER
@@ -61,7 +62,7 @@ makedocs(
 deploydocs(;
     repo = "https://github.com/70Gage70/Sargassum.jl",
     target = "build", 
-    versions = nothing,
+    # versions = nothing,
     branch = "gh-pages",
     devbranch = "master",
     push_preview = true
