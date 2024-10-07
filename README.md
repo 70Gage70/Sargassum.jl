@@ -14,7 +14,7 @@ Sargassum.jl was developed by the [Nonlinear Dynamics Group](https://nonlinear.e
 
 # Documentation
 
-Documentation coming soon.
+[Documentation](https://70gage70.github.io/Sargassum.jl/dev/)
 
 # Citation
 
