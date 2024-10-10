@@ -2,8 +2,7 @@
 
 [`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl) contains all of the core simulation functionality in Sargassum.jl and is the largest package in the ecosystem. To follow along with this tutorial, ensure that Sargassum.jl has been installed with the default interpolants as described in [Getting Started](getting-started.md). 
 
-
-# First Steps
+## First Steps
 
 Before doing anything else, ensure that the package is loaded into your Julia session,
 
@@ -41,9 +40,9 @@ rtr2mat(rtr, "first_steps.mat")
 Check `pwd()` to see your current working directory, and find the file `first_steps.mat`.
 
 
-# Building your own RaftParameters
+## Building your own RaftParameters
 
-## Introduction to RaftParameters
+### Introduction to RaftParameters
 
 We now provide a walkthrough of the construction of a `RaftParameters` object. We will essentially recreate `Examples.QuickRaftParameters()` to show how this is done. The signature of the basic `RaftParameters` constructor is
 
@@ -51,7 +50,7 @@ We now provide a walkthrough of the construction of a `RaftParameters` object. W
 RaftParameters(; ics, clumps, springs, connections, gd_model, land, n_clumps_max, geometry = true, fast_raft = false)
 ```
 
-Each of this kwargs is defined as follows. We describe the fields with minimal jargon here, see [`RaftParameters`](@ref) for the full documentation.
+Each of these kwargs are defined as follows. We describe the fields with minimal jargon here, see [`RaftParameters`](@ref) and the references therein for the full documentation.
 
 - `ics`: The initial conditions of the simulation, including coordinates and simulation time span. Contained in an [`InitialConditions`](@ref).
 - `clumps`: Physics parameters defining each (identical) clump; buoyancy, windage etc. Contained in a [`ClumpParameters`](@ref) object.
@@ -60,10 +59,10 @@ Each of this kwargs is defined as follows. We describe the fields with minimal j
 - `gd_model`: A model controling how clumps grow and die due to biological effects. Contained in an [`AbstractGrowthDeathModel`](@ref) object.
 - `land`: A land model; how clumps should behave when reaching land. Contained in an [`AbstractLand`](@ref) object.
 - `n_clumps_max`: The maximum number of clumps allowed to exist across the entire simulation. Should be a positive integer.
-- `geometry`: A Boolean flag. If true, corrections are applied to account for the spherical geometry of the Earth. The default value of this is `true` and we will leave it alone for now.
+- `geometry`: A Boolean flag. If `true`, corrections are applied to account for the spherical geometry of the Earth. The default value of this is `true` and we will leave it alone for now.
 - `fast_raft`: A Boolean flag that controls whether a "total" interpolant is created before the integration to save time on multiple evaluations. This is technical, and we omit the discussion for now. The default value of this flag is `false` and we leave this set as is.
 
-## Defining each argument
+### Defining each argument
 
 Click the relevant tab to see how each argument is constructed.
 
@@ -163,7 +162,7 @@ land = Land()
 
 :::
 
-## Application
+### Application
 
 Now that all the appropriate arguments are defined, we simply use the `RaftParameters` constructor.
 
@@ -186,4 +185,4 @@ rtr = simulate(rp)
 trajectory(rtr, limits = (-60, -45, 0, 15))
 ```
 
-Comparing this to our earlier example, we see that they are indeed identical.
+Comparing this to our [earlier example](#First-Steps), we see that they are indeed identical.

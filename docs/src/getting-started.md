@@ -9,7 +9,7 @@
 - [`SargassumFromAFAI.jl`](https://github.com/70Gage70/SargassumFromAFAI.jl): Downloading raw AFAI data and generating Sargassum distribution maps.
 - [`SargassumColors.jl`](https://github.com/70Gage70/SargassumColors.jl): Color maps and general plot styling.
 
-Each of these packages can be used individually, but most end-users will want to simply using `Sargassum.jl`
+Each of these packages can be used individually, but most end-users will want to simply use `Sargassum.jl`
 to have all functionality in one location. Together, this represents a fully featured Sargassum analysis toolkit.
 
 Sargassum.jl was developed by the [Nonlinear Dynamics Group](https://nonlinear.earth.miami.edu/index.html) at the University of Miami. Refer [here](cite.md) for citation information.
