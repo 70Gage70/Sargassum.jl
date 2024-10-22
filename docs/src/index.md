@@ -25,12 +25,12 @@ hero:
 features:
   - title: Interface
     details: Simulate full physics models with your own environment data in a zero-code interface.
-    link: /s-interface.md
+    link: /interface.md
   - title: Customize
     details: Write your own biology models on top of state of the art physics simulations.
-    link: /s-bomb.md
+    link: /simulation.md
   - title: Observe
     details: Download raw satellite data and convert to Sargassum density maps.
-    link: /s-afai.md
+    link: /afai.md
 ---
 ```
