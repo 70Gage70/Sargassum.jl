@@ -23,6 +23,11 @@ using Sargassum
 
 These distributions must be downloaded first, which is accomplished simply using the function [`download_precomputed`](@ref) which downloads each available year's distribution, roughly 5 MB of data per year.
 
+```@setup afai-1
+using Sargassum 
+download_precomputed()
+```
+
 ```julia
 download_precomputed()
 ```
@@ -30,7 +35,6 @@ download_precomputed()
 This only has to be done once, but can be re-run to download any new available data. All precomputed data is stored in the variable [`SARGASSUM_DISTRIBUTION_PRECOMPUTED`](@ref). This is a `Dict` mapping `(year, month)` tuples to [`SargassumDistribution`](@ref) objects. For now, let's visualize the April 2018 weekly distributions using the [`viz`](@ref) function:
 
 ```@example afai-1
-using Sargassum # hide
 dist_april_2018 = SARGASSUM_DISTRIBUTION_PRECOMPUTED[(2018, 4)]
 viz(dist_april_2018, log_scale = true)
 ```
