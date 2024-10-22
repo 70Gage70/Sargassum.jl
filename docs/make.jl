@@ -2,16 +2,6 @@ using Documenter, DocumenterVitepress
 using Sargassum
 using Dates, CairoMakie
 
-# try
-#     itps_load(Sargassum.SargassumBOMB._ITPS_SCRATCH.x)
-# catch
-#     try 
-#         itps_default_construct(download = true)
-#     catch
-#         nothing
-#     end
-# end
-
 ### VITEPRESS
 makedocs(;
     sitename = "Sargassum.jl",
