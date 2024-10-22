@@ -17,7 +17,12 @@ end
 # ╔═╡ 589f251d-a2df-4879-9933-4deb95a8003a
 begin
     import Pkg
-    Pkg.activate(joinpath(@__DIR__, "..", ".."))
+    Pkg.activate(".")
+	Pkg.Registry.add("General")
+	Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl", rev = "master")
+	Pkg.add([
+		"PlutoUI", "HypertextLiteral", "NativeFileDialog", "PlutoHooks", "GLMakie", 
+		"Dates", "JLD2", "MAT", "NetCDF", "Unitful"])
 	
 	using Sargassum
 	using PlutoUI, HypertextLiteral, NativeFileDialog, PlutoHooks # interactivity in notebook

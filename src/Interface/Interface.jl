@@ -13,7 +13,7 @@ interface code itself has been modified. That is, changing parameters using slid
 """
 function interface(; reset::Bool = false, args...)
     nb_orig = joinpath(@__DIR__, "interface-original.jl")
-    nb_edit = joinpath(@__DIR__, "interface-edit.jl")
+    nb_edit = joinpath(_INTERFACE_SCRATCH.x, "interface-edit.jl")
 
     if reset
         rm(nb_edit, force = true)

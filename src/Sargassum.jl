@@ -30,6 +30,13 @@ A `Ref` whose field is the path to the location of the raw data that generates d
 """
 const _ITPS_SCRATCH = Ref{String}()
 
+"""
+    const _INTERFACE_SCRATCH
+
+A `Ref` whose field is the path to the location of the editable interface notebook.
+"""
+const _INTERFACE_SCRATCH = Ref{String}()
+
 ###############################################################
 
 # general
@@ -115,8 +122,11 @@ function __init__()
         not been created, run `itps_default_construct(download = true)`. Alternatively, downgrade to Julia 1.10.5 until the issue is resolved."
     end
 
+    ### Interface
+    _INTERFACE_SCRATCH.x = @get_scratch!("_INTERFACE_SCRATCH")
+
     nb_orig = joinpath(@__DIR__, "Interface", "interface-original.jl")
-    nb_edit = joinpath(@__DIR__, "Interface", "interface-edit.jl")
+    nb_edit = joinpath(_INTERFACE_SCRATCH.x, "interface-edit.jl")
 
     if !isfile(nb_edit)
         Pluto.readwrite(nb_orig, nb_edit)
