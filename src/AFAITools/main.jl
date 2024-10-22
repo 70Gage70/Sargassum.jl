@@ -159,7 +159,7 @@ function coast_and_clouds!(afai::AFAI; apply_coast::Bool = true)
     # determine whether each point on the afai grid is on land or ocean
     lon_lsm, lat_lsm, lsm = GeoDatasets.landseamask(resolution = 'l', grid = 5)
     lsm[lsm .== 2] .= 1 # lake is not ocean, so it's land
-    landseamask_itp = scale(Interpolations.interpolate(lsm, BSpline(Constant())), lon_lsm, lat_lsm)
+    landseamask_itp = Interpolations.scale(Interpolations.interpolate(lsm, BSpline(Constant())), lon_lsm, lat_lsm)
     landseamask_gridded = [landseamask_itp(lon_i, lat_i) for lon_i in lon, lat_i in lat]
 
     coast = falses(length(lon), length(lat))
