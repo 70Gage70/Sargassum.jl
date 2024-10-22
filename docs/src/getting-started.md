@@ -2,15 +2,12 @@
 
 ## Introduction
 
-`Sargassum.jl` is a meta package for the [Julia](https://julialang.org/) programming language that bundles the following component packages all in one location.
+`Sargassum.jl` is a package for the [Julia](https://julialang.org/) programming language that bundles all of the following functionality in one convenient location. Together, this represents a fully featured Sargassum analysis toolkit.
 
-- [`SargassumInterface.jl`](https://github.com/70Gage70/SargassumInterface.jl): High level, zero-code interface.
-- [`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl): Main modelling and simulation tools.
-- [`SargassumFromAFAI.jl`](https://github.com/70Gage70/SargassumFromAFAI.jl): Downloading raw AFAI data and generating Sargassum distribution maps.
-- [`SargassumColors.jl`](https://github.com/70Gage70/SargassumColors.jl): Color maps and general plot styling.
-
-Each of these packages can be used individually, but most end-users will want to simply use `Sargassum.jl`
-to have all functionality in one location. Together, this represents a fully featured Sargassum analysis toolkit.
+- State of the art physics simulation of Sargassum clumps using Maxey-Riley models with nonlinear spring interactions and customizable biological effects.
+- Download raw AFAI data and generate Sargassum distribution maps yourself, or use precomputed maps available starting 2017.
+- Plot your data quickly; all major objects can be visualized with one line of code!
+- A zero code interface that allows the core tools to be used in a zero-code environment with built-in documentation.
 
 Sargassum.jl was developed by the [Nonlinear Dynamics Group](https://nonlinear.earth.miami.edu/index.html) at the University of Miami. Refer [here](cite.md) for citation information.
 
@@ -47,14 +44,14 @@ winget install julia -s msstore
 
 Run in the terminal, not in Julia!
 ```sh
-julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/70Gage70/SargassumRegistry")); Pkg.add("Sargassum"); using Sargassum; itps_default_construct(download = true);'
+julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum; itps_default_construct(download = true);'
 ```
 
 == Install without default interpolants
 
 Run in the terminal, not in Julia!
 ```sh
-julia -e 'import Pkg; Pkg.Registry.add(Pkg.RegistrySpec(url = "https://github.com/70Gage70/SargassumRegistry")); Pkg.add("Sargassum"); using Sargassum; '
+julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum;'
 ```
 
 :::
@@ -66,11 +63,11 @@ Advanced Julia users can [add the package](https://pkgdocs.julialang.org/v1/mana
 In general, this documentation can be read in order, but refer to the following for further direction.
 
 !!! tip "I want to get started as quickly as possible and/or do as little coding as possible."
-    See [SargassumInterface](s-interface.md).
+    → [Interface](interface.md).
 
 !!! tip "I want to learn the core simulation tools of the package or create custom biology/physics functionality."
-    See [SargassumBOMB](s-bomb.md).
+    → [Simulation](simulation.md).
 
 !!! tip "I want analyze satellite data or create Sargassum distribution maps."
-    See [SargassumFromAFAI](s-afai.md).       
+    → [AFAI](afai.md).       
 

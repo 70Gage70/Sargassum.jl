@@ -1,6 +1,6 @@
-# SargassumBOMB.jl
+# Simulation
 
-[`SargassumBOMB.jl`](https://github.com/70Gage70/SargassumBOMB.jl) contains all of the core simulation functionality in Sargassum.jl and is the largest package in the ecosystem. To follow along with this tutorial, ensure that Sargassum.jl has been installed with the default interpolants as described in [Getting Started](getting-started.md). 
+Sargassum.jl contains full physics and biology simulation for Sargassum clumps. To follow along with this tutorial, ensure that Sargassum.jl has been installed with the default interpolants as described in [Getting Started](getting-started.md). 
 
 ## First Steps
 
@@ -12,11 +12,11 @@ using Sargassum
 
 The highest level function in the package is [`simulate`](@ref), which takes one mandatory argument, a [`RaftParameters`](@ref) object. The general plan is therefore to build the `RaftParameters` object that defines the problem we want to solve. Then, we will simply invoke `simulate`.
 
-To get up and running as fast as possible, we can use the built-in [`Examples`](s-bomb-examples-api.md) module to generate our `RaftParameters`.
+To get up and running as fast as possible, we can use [`QuickRaftParameters`](@ref) to generate our `RaftParameters`.
 
 ```@example s-bomb-1
 using Sargassum # hide
-rp = Examples.QuickRaftParameters()
+rp = QuickRaftParameters()
 ```
 
 Observe that `RaftParameters` prints out information about its contents, which we will discuss further later. For now, note that the initial conditions inform us that we are simulating from April 13, 2018 to April 15, 2018 with 25 clumps. A "clump" is a discrete chunk of Sargassum. In the language of Sargassum.jl, a "Raft" is a collection of any number of clumps (including a single clump). Each clump in a raft shares a number of physics parameters via [`ClumpParameters`](@ref). For now, we will proceed with the simulation.
@@ -25,10 +25,10 @@ Observe that `RaftParameters` prints out information about its contents, which w
 rtr = simulate(rp)
 ```
 
-The output of `simulate` is a [`RaftTrajectory`](@ref) object. This holds all of the information about each clump's trajectory during the simulation. The easiest way to interpret the results of the simulation is to create a plot. We can use the [`trajectory`](@ref) function to get a plot with some default arguments already chosen for us.
+The output of `simulate` is a [`RaftTrajectory`](@ref) object. This holds all of the information about each clump's trajectory during the simulation. The easiest way to interpret the results of the simulation is to create a plot. We can use the [`viz`](@ref) function to get a plot with some default arguments already chosen for us.
 
 ```@example s-bomb-1
-trajectory(rtr, limits = (-60, -45, 0, 15)) # limits = (lon_min, lon_max, lat_min, lat_max)
+viz(rtr, limits = (-60, -45, 0, 15)) # limits = (lon_min, lon_max, lat_min, lat_max)
 ```
 
 We see a small amount of movement off the coast of Brazil. Suppose we want to save this data for future analysis; for this we can use the [`rtr2mat`](@ref) function to generate a `.mat` file which can be read in [MATLAB](https://www.mathworks.com/help/matlab/ref/load.html), [Python](https://github.com/skjerns/mat7.3), [Julia](https://github.com/JuliaIO/MAT.jl) and other languages with the appropriate package.
@@ -37,14 +37,16 @@ We see a small amount of movement off the coast of Brazil. Suppose we want to sa
 rtr2mat(rtr, "first_steps.mat")
 ```
 
-Check `pwd()` to see your current working directory, and find the file `first_steps.mat`.
+Run `pwd()` to see your current working directory, and find the file `first_steps.mat`.
 
 
 ## Building your own RaftParameters
 
 ### Introduction to RaftParameters
 
-We now provide a walkthrough of the construction of a `RaftParameters` object. We will essentially recreate `Examples.QuickRaftParameters()` to show how this is done. The signature of the basic `RaftParameters` constructor is
+The "atom" of a Sargassum simulation is called a *clump* such that a clump is qualitatively a handful of Sargassum. Each clump has identical physics parameters and is modeled as a hard sphere via the [Maxey-Riley equations](https://www.cambridge.org/core/journals/journal-of-fluid-mechanics/article/abs/minimal-maxeyriley-model-for-the-drift-of-sargassum-rafts/5236FED7891D4309789EF0696907655F). Sets of clumps are referred to as *rafts* and are joined together by springs that model interaction forces. Clumps grow and die by biological effects and may die when reaching land. The [`RaftParameters`](@ref) collects all of this information. 
+
+We now provide a walkthrough of the construction of a [`RaftParameters`](@ref) object. We will essentially recreate `Examples.QuickRaftParameters()` to show how this is done. The signature of the basic [`RaftParameters`](@ref) constructor is
 
 ```julia
 RaftParameters(; ics, clumps, springs, connections, gd_model, land, n_clumps_max, geometry = true, fast_raft = false)
@@ -182,7 +184,28 @@ And now we can simulate and plot as earlier:
 
 ```@example s-bomb-2
 rtr = simulate(rp)
-trajectory(rtr, limits = (-60, -45, 0, 15))
+viz(rtr, limits = (-60, -45, 0, 15))
 ```
 
 Comparing this to our [earlier example](#First-Steps), we see that they are indeed identical.
+
+## Advanced RaftParameters Construction
+
+An easy way to see the available options for a certain [`RaftParameters`](@ref) object is to use the `subtypes` command. For example, the `connections` argument is an [`AbstractConnections`](@ref) and we have
+
+```@example s-bomb-3
+using Sargassum # hide
+using InteractiveUtils # hide
+subtypes(AbstractConnections)
+```
+
+Then, we can examine the documentation of any of these by typing `?` to access the `help>` prompt followed by the desired name. For example, [`ConnectionsNearest`](@ref) reads
+
+```@docs; canonical=false
+ConnectionsNearest
+```
+
+In this case, we see that [`ConnectionsNearest`](@ref) assigns connections between a clump's `k`-nearest neighbors and has the constructor `ConnectionsNearest(n_clumps_max, neighbors)`. 
+
+Refer to the simulation [API](simulation-api.md) for further information on the built-in options and refer to the [advanced](simulation-advanced.md) section for tutorials on building your own tools (e.g. building a custom biology model).
+

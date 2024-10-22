@@ -1,6 +1,6 @@
 using Documenter, DocumenterVitepress
 using Sargassum
-using CairoMakie
+using Dates, CairoMakie
 
 # try
 #     itps_load(Sargassum.SargassumBOMB._ITPS_SCRATCH.x)
@@ -20,8 +20,8 @@ makedocs(;
     checkdocs=:all,
     format = DocumenterVitepress.MarkdownVitepress(
         repo = "https://github.com/70Gage70/Sargassum.jl",
-        # md_output_path = ".", # LOCAL ONLY
-        # build_vitepress = false, # LOCAL ONLY
+        md_output_path = ".", # LOCAL ONLY
+        build_vitepress = false, # LOCAL ONLY
         devbranch = "master", 
         devurl = "dev";
     ),
@@ -29,7 +29,7 @@ makedocs(;
     source = "src", 
     build = "build",
     warnonly = true,
-    # clean = true, # LOCAL ONLY
+    clean = true, # LOCAL ONLY
 )
 
 ### DOCUMENTER
