@@ -3,10 +3,13 @@ function viz(
     field::Symbol;
     limits::Union{NTuple{4, Real}, Nothing} = nothing,
     time::Union{Nothing, Real} = nothing,
-    show_land::Bool = false,
+    show_land::Bool = true,
     n_points::Integer = 100)
 
-    lims = isnothing(limits) ? boundary(itp) : limits
+    lims = boundary(itp)
+    if !isnothing(limits)
+        lims[1:4] .= limits
+    end
 
     xs = range(start = lims[1], stop = lims[2], length = n_points)
     ys = range(start = lims[3], stop = lims[4], length = n_points)
@@ -24,9 +27,11 @@ function viz(
     fig = Figure()
     ax = Axis(fig[1, 1], limits = lims[1:4])
 
-    heatmap!(ax, xs, ys, zs)    
-
+    hm = heatmap!(ax, xs, ys, zs, colormap = EUREKA)    
     show_land && land!(ax)
+
+    idx = findfirst(x -> x[1] == field, itp.fields_names)
+    Colorbar(fig[1, 2], hm, label = "$(itp.fields_names[idx])")
 
     return fig
 end
@@ -35,7 +40,7 @@ function viz(
     itp::Ref{InterpolatedField}, 
     field::Symbol;
     time::Union{Nothing, Real} = nothing,
-    show_land::Bool = false,
+    show_land::Bool = true,
     n_points::Integer = 100)
 
     return viz(itp.x, field; time = time, show_land = show_land, n_points = n_points)
@@ -49,8 +54,8 @@ function viz!(
     time::Union{Nothing, Real} = nothing,
     n_points::Integer = 100)
 
-    lims = ax.limits[] |> deepcopy
-
+    lims = boundary(itp)
+    
     xs = range(start = lims[1], stop = lims[2], length = n_points)
     ys = range(start = lims[3], stop = lims[4], length = n_points)
 
@@ -63,7 +68,7 @@ function viz!(
         error("Field has too many dimensions.")
     end
 
-    return heatmap!(ax, xs, ys, zs)    
+    return heatmap!(ax, xs, ys, zs, colormap = EUREKA)    
 end
 
 function viz!(

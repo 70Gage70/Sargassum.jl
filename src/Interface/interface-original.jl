@@ -36,6 +36,10 @@ begin
 	catch
 		itps_default_construct(download = true)
 	end
+
+	if isempty(Sargassum._SARGASSUM_DISTRIBUTION_PRECOMPUTED_SCRATCH.x)
+		download_precomputed()
+	end
 	
 	@info "Loaded dependencies."
 end
@@ -789,7 +793,7 @@ let
 	This is a [Pluto notebook](https://plutojl.org/) powered by the [Julia programming language](https://julialang.org/).
 
 	- [GitHub](https://github.com/70Gage70/Sargasum.jl)
-	- [How to cite](https://github.com/70Gage70/Sargasum.jl)
+	- [Citation](https://doi.org/10.1093/pnasnexus/pgae451)
 	
 	$(restart_button)
 	"""
@@ -1050,7 +1054,7 @@ end
 # ╔═╡ dc6651a1-4c47-4cd7-a831-f37812e8a8e6
 let
 	if gd_type == "Immortal"
-        global gd_model = ImmortalModel(n_clumps_max)
+        global gd_model = ImmortalModel()
 	elseif gd_type == "Brooks"
 		μ_max, m, k_N, T_min, T_max, S_min, S_max, c_min, c_max = gd_params_brooks
 		μ_max = μ_max * 10^(-2)

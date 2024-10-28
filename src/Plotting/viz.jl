@@ -49,7 +49,7 @@ a `Symbol` corresponding to the name of the field. Use `fields(itp)` to check wh
 - `limits`: If provided, the plot will be displayed in the region `lon_min, lon_max, lat_min, lat_min = limits`. Otherwise \
 it is displayed according to `lon_min, lon_max, lat_min, lat_min = boundary(itp)`. Default `nothing`.
 - `time`: If the interpolant is time dependent, plot it at this time. Default the first available time from `limits(itp)`.
-- `show_land`: If `true`, overlay a plot of land. Default `false`.
+- `show_land`: If `true`, overlay a plot of land. Default `true`.
 - `n_points`: The number of points to use in each dimension of the plot, more gives higher resolution. Default `100`.
 
 # Simulation Objects

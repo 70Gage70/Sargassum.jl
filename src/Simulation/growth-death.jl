@@ -4,35 +4,19 @@ const _UNISAMP = Union{Sampleable{Univariate, Continuous}, Sampleable{Univariate
     abstract type AbstractGrowthDeathModel
 
 The abstract type for growth and death models.
-    
-Subtypes must have a field `S`, a `Vector{Float64}` of length `n_clumps_max` representing an "amount" or "mass" for each clump.
-
-Subtypes must have a field `S_gen`, which is a `Distributions.Sampleable{Univariate, ...}` such that `rand(S_gen)` generates a 
-sample of `S`. E.g. `S_gen = Distributions.Dirac(0.0)` will always initialize clumps with `S = fill(0.0, n_clumps_max)`.
 """
 abstract type AbstractGrowthDeathModel end 
 
 """
-    struct ImmortalModel{D}
+    struct ImmortalModel
 
 An `AbstractGrowthDeathModel` such that no growth or death occurs.
 
-### Fields
-
-- `S`: The amount parameter. Unused for an `ImmortalModel`.
-- `S_gen`. The amount generator. Unused for an `ImmortalModel`.
-
 ### Constructors 
 
-    ImmortalModel(n_clumps_max; S_gen = Dirac(0.0))
+    ImmortalModel()
 """
-struct ImmortalModel{D<:_UNISAMP} <: AbstractGrowthDeathModel
-    S::Vector{Float64}
-    S_gen::D
-
-    function ImmortalModel(n_clumps_max::Integer; S_gen::D = Dirac(0.0)) where {D<:_UNISAMP}
-        return new{D}(zeros(n_clumps_max), S_gen)
-    end
+struct ImmortalModel <: AbstractGrowthDeathModel
 end
 
 # condition 
@@ -132,8 +116,9 @@ The growth/death model of [Brooks et al. (2018)](https://www.int-res.com/abstrac
 
 ### Fields 
 
-- `S`: The amount parameter.
-- `S_gen`. The amount generator.
+- `S`: A `Vector{Float64}` of length `n_clumps_max` representing an "amount" or "mass" for each clump.
+- `S_gen`. A `Distributions.Sampleable{Univariate, ...}` such that `rand(S_gen)` generates a \
+sample of `S`. E.g. `S_gen = Distributions.Dirac(0.0)` will always initialize clumps with `S = fill(0.0, n_clumps_max)`.
 - `params`: The [`BrooksModelParameters`](@ref) parameters of the model.
 - `growths`:A `Vector` of indices of clumps that are to be grown (if any).
 - `deaths`: A `Vector` of indices of clumps that are to be killed (if any).

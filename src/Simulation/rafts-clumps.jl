@@ -11,7 +11,7 @@ A container for the high-level parameters of the BOM equations.
 - `σ` []: The Stokes drift parameter; this applies an additional fraction of the Stokes drift to the water velocity 
     component of the particle.
 
-### Constructor
+## Constructing from physical constants
 
     ClumpParameters(; constants...)
 
@@ -27,6 +27,12 @@ Compute the parameters required for the eBOM equations from physical constants.
 - `νa` [km^2/d]: The viscosity of the air. Default: `1.296e-6`.
 - `Ω` [rad/d]: The angular velocity of the Earth. Default: `2π`.
 - `σ` []: The Stokes drift parameter. Default: `0.0`.
+
+## Constructing directly
+
+    ClumpParameters(α, τ, R, Ω, σ)
+
+Construct a `ClumpParameters` from the final constants directly. Use this to force specific values.
 """
 struct ClumpParameters
     α::Float64

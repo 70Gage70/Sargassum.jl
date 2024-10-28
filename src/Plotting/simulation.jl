@@ -3,7 +3,7 @@ function viz!(ax::Axis, traj::Trajectory; args...)
     x, y = traj.xy[:,1], traj.xy[:,2]
     defaults = (color = traj.t, linewidth = 2)
 
-    return lines!(axis, x, y; merge(defaults, args)...)
+    return lines!(ax, x, y; merge(defaults, args)...)
 end
 
 
@@ -125,15 +125,20 @@ function viz(rtraj::RaftTrajectory; limits::NTuple{4, Real} = (-100, -40, 5, 35)
     fig = Figure()
     ax = Axis(fig[1, 1], limits = limits)
 
+    color_limits = rtraj.com.t |> extrema
+
     for i in keys(rtraj.trajectories)
         x, y = rtraj.trajectories[i].xy[:,1], rtraj.trajectories[i].xy[:,2]
 
-        lines!(ax, x, y, color = rtraj.trajectories[i].t, linewidth = 2)
-    end
+        color = rtraj.trajectories[i].t .|> c -> (c - color_limits[1])/(color_limits[2] - color_limits[1])
+        color = cgrad(:viridis)[color]
 
-    limits = rtraj.com.t |> x -> x .- first(x) |> extrema
+        lines!(ax, x, y, color = color, linewidth = 2)
+    end
+    
+    color_limits = rtraj.com.t |> x -> x .- first(x) |> extrema
     t0 = time2datetime(rtraj.com.t[1])
-    Colorbar(fig[1, 2], limits = limits, label = "Days since $(t0)")
+    Colorbar(fig[1, 2], limits = color_limits, label = "Days since $(t0)")
 
     land!(ax)
 

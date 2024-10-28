@@ -10,7 +10,7 @@ function QuickRaftParameters()
     clumps = ClumpParameters()
     springs = BOMBSpring(1.0, ΔL(ics))
     connections = ConnectionsNearest(n_clumps_max, 2)
-    gd_model = ImmortalModel(n_clumps_max)
+    gd_model = ImmortalModel()
     land = Land()
 
     return RaftParameters(
@@ -82,7 +82,7 @@ function QuickRaftParameters(
 			verbose = verbose)
 	else
 		n_clumps_max_rp = n_clumps_max
-		gd_model = ImmortalModel(n_clumps_max_rp)
+		gd_model = ImmortalModel()
 	end
 
 	clumps = begin c_p = ClumpParameters(δ = delta) ; ClumpParameters(c_p.α, tau, c_p.R, c_p.Ω, sigma) end

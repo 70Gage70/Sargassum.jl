@@ -23,7 +23,7 @@ function kill!(integrator::SciMLBase.DEIntegrator, inds::Vector{<:Integer})
 end
 
 """
-    grow!(integrator, location)
+    grow!(integrator; location)
 
 Add a clump to the [`RaftParameters`](@ref), `rp = integrator.p`, with an index equal to `rp.n_clumps_tot + 1` and also update `rp.living` appropriately.
 
@@ -33,8 +33,8 @@ Add a clump to the [`RaftParameters`](@ref), `rp = integrator.p`, with an index 
 
 The possible flags are:
 - `"parent"`: A parent clump is chosen randomly among clumps that already exist, and the new clump is placed \
-a distance `integrator.rp.springs.L` away and at a random angle from it.
-- `"com"`: The same as `"parent"`, except the centre location is at the center of mass of the raft.
+a distance `integrator.rp.springs.L` away and at a uniformly random angle from it.
+- `"com"`: The same as `"parent"`, except the center location is at the center of mass of the raft.
 
 If `location` is an `Integer` with value `i`, then the new clump will be grown with `i`th clump (by vector location) as its parent.
 

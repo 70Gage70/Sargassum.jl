@@ -54,6 +54,22 @@ get 1 clump each and the larger half get 2 clumps each.
 ### Optional Arguments 
 
 - `seed`: `Random.seed!(seed)` is called before the the initialization. Default 1234.
+
+## Constructing from a SargassumDistribution (streamlined)
+
+    InitialConditions(dist, week, n_weeks, levels; seed)
+
+Construct [`InitialConditions`](@ref) from a `SargassumDistribution` using a more streamlined incantation than above.
+
+### Arguments 
+- `dist`: A `SargassumDistribution`.
+- `week`: An integer between 1 and 4 giving the particular week of the month to initialize from.
+- `n_weeks`: The number of weeks to integrate for.
+- `levels`: As above.
+
+### Optional Arguments 
+
+- `seed`: `Random.seed!(seed)` is called before the the initialization. Default 1234.
 """
 struct InitialConditions
     tspan::Tuple{Float64, Float64}
@@ -168,4 +184,23 @@ function InitialConditions(
     ics = sph2xy(ics)
     
     return InitialConditions(tspan = tspan, ics = ics)
+end
+
+function InitialConditions(
+    dist::SargassumDistribution, 
+    week::Integer,
+    n_weeks::Integer,
+    levels::Integer;
+    seed::Integer = 1234)
+
+    @argcheck week in [1, 2, 3, 4]
+    @argcheck n_weeks >= 1
+
+    ym1 = yearmonth(dist.time)
+    ymw1 = (ym1[1], ym1[2], week)
+
+    ymw2 = ymwplusweek(ymw1, n_weeks)
+    tspan = (ymw1, ymw2) .|> ymw2time
+
+    return InitialConditions(tspan, dist, [week], levels, seed = seed)
 end

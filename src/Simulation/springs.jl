@@ -3,22 +3,23 @@
 
 A supertype for all connections between clumps.
 
-Every subtype of `AbstractConnections` should be mutable with a field `connections` which is similar to a vector
-of vectors such that that `connections[i]` is a list of clump indices that
-are connected to clump `i`.
+Every subtype of `AbstractConnections` should have a field `connections` which is similar to a vector \
+of vectors such that that `connections[i]` is a list of clump indices that \
+are connected to clump `i`. `connections` should be initialized to vector of \
+empty vectors of length `n_clumps_max`.
 
 This should be updated in-place during the integration, i.e. it only shows the connections at the current time.
 
-Every subtype of `AbstractConnections` should implement a `form_connections(con::Connections, u)` method which
-returns what `con.connections` should be updated with, assuming that `u` is the solution vector. The correction
-of indices due to living clumps is provided automatically later, so here it can be assumed that `u` contains
+Every subtype of `AbstractConnections` should implement a `form_connections(con::Connections, u)` method which \
+returns what `con.connections` should be updated with, assuming that `u` is the solution vector. The correction \
+of indices due to living clumps is provided automatically later, so here it can be assumed that `u` contains \
 only living clumps.
 
 Any subtype of `AbstractConnections` can be evaluated at an `OrdinaryDiffEq.integrator` for callback purposes.
 """
 abstract type AbstractConnections end
 
-# callback helper
+# do the actual callback: update integrator.p.connections.connections with the newly computed connections
 function (::AbstractConnections)(integrator)
     living = integrator.p.living
     conns = form_connections(integrator.p.connections, view(integrator.u, :, living))
@@ -139,7 +140,7 @@ end
 
 A supertype for all spring parameters. Each clump, when conncted, is joined by the same kind of spring.
 
-Every subtype of `AbstractSpring` should have a field `k::Function` representing the stiffness force 
+Every subtype of `AbstractSpring` should have a field `k::Function` representing the stiffness force \
 and callable as `k(x)` as well as a field `L::Real` representing the spring's natural length.
 
 All forces are computed using 
@@ -198,8 +199,8 @@ end
 """
     ΔL(x_range, y_range; to_xy)
 
-Compute a spring length from a rectangular arrangement of clumps provided by `x_range` and `y_range`. This is the distance between the centers of 
-diagonally-adjacent gridpoints. These should be equirectangular coordinates.
+Compute a spring length from a rectangular arrangement of clumps provided by `x_range` and `y_range`. This is the \
+distance between the centers of diagonally-adjacent gridpoints. These should be equirectangular coordinates.
 
 ### Optional Arguments
 
@@ -216,8 +217,8 @@ end
 """
     ΔL(dist::SargassumDistribution)
 
-Compute a spring length from a `SargassumDistribution`. This is the equirectangular distance between the centers of 
-diagonally-adjacent gridpoints.
+Compute a spring length from a `SargassumDistribution`. This is the equirectangular distance between \
+the centers of diagonally-adjacent gridpoints.
 """
 function ΔL(dist::SargassumDistribution)
     p1 = sph2xy(dist.lon[1], dist.lat[1])
@@ -228,7 +229,7 @@ end
 """
     ΔL(ics::InitialConditions; k::Integer)
 
-Compute a spring length from a `InitialConditions`. This is the median among all pairwise 
+Compute a spring length from a `InitialConditions`. This is the median among all pairwise \
 equirectangular distances between points' `k` nearest neighbors. Default `k = 5`.
 """
 function ΔL(ics::InitialConditions; k::Integer = 5)
