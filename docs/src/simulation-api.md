@@ -7,15 +7,6 @@ These are the full docstrings for the Simulation subsection of Sargassum.jl.
 Pages = ["simulation-api.md"]
 ```
 
-## Units, Time and Coordinates 
-```@autodocs
-Modules = [Sargassum]
-Pages = "Utilities/" .* [
-    "units.jl", 
-    "time.jl", 
-    "coordinates.jl"]
-``` 
-
 ## Interpolants 
 ```@autodocs
 Modules = [Sargassum]

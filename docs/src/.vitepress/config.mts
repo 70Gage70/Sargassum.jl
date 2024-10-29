@@ -26,7 +26,7 @@ const navTemp = {
         { text: 'Plotting', link: '/plotting'},
       ],
     },
-    { text: 'Cite', link: '/index'}
+    { text: 'Cite', link: '/cite'}
   ],
 }
 
@@ -83,6 +83,12 @@ export default defineConfig({
           { text: 'API', link: '/interface-api' },
         ],
       },
+      { text: 'Units and Time', link: '/units',
+        items: [
+          { text: 'Tutorial', link: '/units' },
+          { text: 'API', link: '/units-api' },
+        ],
+      },
       { text: 'AFAI', link: '/afai',
         items: [
           { text: 'Tutorial', link: '/afai' },
@@ -93,7 +99,8 @@ export default defineConfig({
         items: [
           { text: 'Tutorial', link: '/simulation' },
           { text: 'Interpolants', link: '/simulation-interpolants' },
-          { text: 'Advanced Usage', link: '/simulation-advanced' },
+          { text: 'Custom Physics', link: '/simulation-adv-physics' },
+          { text: 'Custom Biology', link: '/simulation-adv-biology' },
           { text: 'API', link: '/simulation-api' },
         ],
       },
@@ -104,6 +111,8 @@ export default defineConfig({
         ],
       },
       { text: 'Extra API', link: '/extra-api',
+      },
+      { text: 'Cite', link: '/cite',
       },
     ],
     editLink: {

@@ -1,6 +1,6 @@
 using Documenter, DocumenterVitepress
 using Sargassum
-using Dates, CairoMakie
+using Dates, CairoMakie, NetCDF, Unitful, JLD2
 
 ### VITEPRESS
 makedocs(;

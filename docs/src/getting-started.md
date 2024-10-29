@@ -44,19 +44,19 @@ winget install julia -s msstore
 
 Run in the terminal, not in Julia!
 ```sh
-julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum; itps_default_construct(download = true);'
+julia -e 'import Pkg; Pkg.add("Sargassum"); using Sargassum; itps_default_construct(download = true);'
 ```
 
 == Install without default interpolants
 
 Run in the terminal, not in Julia!
 ```sh
-julia -e 'import Pkg; Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl"); using Sargassum;'
+julia -e 'import Pkg; Pkg.add("Sargassum"); using Sargassum;'
 ```
 
 :::
 
-Advanced Julia users can [add the package](https://pkgdocs.julialang.org/v1/managing-packages/#Adding-unregistered-packages) to their preferred environment.
+For advanced Julia users: Sargassum.jl is in the Julia General registry and so the usual `pkg> add Sargassum` will work.
 
 ## Next Steps
 

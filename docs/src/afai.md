@@ -25,7 +25,9 @@ These distributions must be downloaded first, which is accomplished simply using
 
 ```@setup afai-1
 using Sargassum 
-download_precomputed()
+if isempty(Sargassum._SARGASSUM_DISTRIBUTION_PRECOMPUTED_SCRATCH.x)
+    download_precomputed()
+end
 ```
 
 ```julia

@@ -151,7 +151,7 @@ connections = ConnectionsNearest(n_clumps_max, 2)
 We construct `gd_model`, an [`AbstractGrowthDeathModel`](@ref) object. Built in to Sargassum.jl are two basic biological model types, [`ImmortalModel`](@ref) where clumps do not grow or die by biological effects and [`BrooksModel`](@ref) with a full model based on [Brooks et. al. (2018)](https://www.int-res.com/abstracts/meps/v599/p1-18/). We will use the `ImmortalModel` here, which has a constructor with `n_clumps_max` as its only argument. Hence, we have
 
 ```@example s-bomb-2
-gd_model = ImmortalModel(n_clumps_max)
+gd_model = ImmortalModel()
 ```
 
 == land
@@ -207,5 +207,5 @@ ConnectionsNearest
 
 In this case, we see that [`ConnectionsNearest`](@ref) assigns connections between a clump's `k`-nearest neighbors and has the constructor `ConnectionsNearest(n_clumps_max, neighbors)`. 
 
-Refer to the simulation [API](simulation-api.md) for further information on the built-in options and refer to the [advanced](simulation-advanced.md) section for tutorials on building your own tools (e.g. building a custom biology model).
+Refer to the simulation [API](simulation-api.md) for further information on the built-in options and refer to the [custom physics](simulation-adv-physics.md) and [custom biology](simulation-adv-biology.md) sections for tutorials on building your own objects.
 
