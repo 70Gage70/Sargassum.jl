@@ -33,7 +33,7 @@ jobs:
       - name: Pull Julia cache
         uses: julia-actions/cache@v1
       - name: Install dependencies
-        run: julia --project=docs -e 'using Pkg; Pkg.Registry.add("General"); Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl", rev = "master"); Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.update(); using Sargassum; itps_default_construct(download = true)'
+        run: julia --project=docs -e 'using Pkg; Pkg.Registry.add("General"); Pkg.add(url = "https://github.com/70Gage70/Sargassum.jl", rev = "master"); Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.update(); using Sargassum; itps_default_construct(download = true); download_precomputed();'
       - name: Build and deploy docs
         uses: julia-actions/julia-docdeploy@v1
         env:

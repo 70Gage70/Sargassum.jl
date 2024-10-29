@@ -105,10 +105,6 @@ export default defineConfig({
         ],
       },
       { text: 'Plotting', link: '/plotting',
-        items: [
-          { text: 'Tutorial', link: '/plotting' },
-          { text: 'API', link: '/plotting-api' },
-        ],
       },
       { text: 'Extra API', link: '/extra-api',
       },
