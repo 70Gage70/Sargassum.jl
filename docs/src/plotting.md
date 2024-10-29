@@ -4,7 +4,7 @@ Sargassum.jl has built-in plotting via the [`viz`](@ref) function. In general, a
 
 ## Index
 ```@index
-Pages = ["plotting-api.md"]
+Pages = ["plotting.md"]
 ```
 
 ## Core Functions
