@@ -1,5 +1,7 @@
 # Sargassum.jl
 
+[![Documentation Status](https://img.shields.io/badge/docs-stable-blue?style=flat-square)](https://70gage70.github.io/Sargassum.jl/dev/)
+
 `Sargassum.jl` is a package for the [Julia](https://julialang.org/) programming language that bundles all of the following functionality in one convenient location. Together, this represents a fully featured Sargassum analysis toolkit.
 
 - State of the art physics simulation of Sargassum clumps using Maxey-Riley models with nonlinear spring interactions and customizable biological effects.
@@ -13,8 +15,25 @@
 
 [Documentation](https://70gage70.github.io/Sargassum.jl/dev/)
 
-# Citation
+# Acknowledgements and Citation
 
-Please cite the following article if `Sargassum.jl` is used in your research:
+If `Sargassum.jl` contributes to your research, we would be grateful if you cite our work:
 
- https://doi.org/10.1093/pnasnexus/pgae451
+```bibtex
+@article{bonnerSargassum24,
+    author = {Bonner, Gage and Beron-Vera, F J and Olascoaga, M J},
+    title = "{Charting the course of Sargassum: Incorporating nonlinear elastic interactions and life cycles in the Maxey-Riley model}",
+    journal = {PNAS Nexus},
+    volume = {3},
+    number = {10},
+    pages = {pgae451},
+    year = {2024},
+    month = {10},
+    issn = {2752-6542},
+    doi = {10.1093/pnasnexus/pgae451},
+    url = {https://doi.org/10.1093/pnasnexus/pgae451},
+    eprint = {https://academic.oup.com/pnasnexus/article-pdf/3/10/pgae451/59961289/pgae451.pdf},
+}
+```
+
+The `Sargassum.jl` Julia package, authored by Gage Bonner, was developed with the support of the National Science Foundation (NSF) grant OCE2148499 titled 'Collaborative Research: Unraveling Connectivity Constraints and Pathways of Sargassum and the Nature of Their Variability by Building on a Maxey-Riley Framework for Drift Modeling,' awarded to Maria J. Olascoaga (Principal Investigator), along with Francisco J. Beron-Vera and Nathan Putman (co-Principal Investigators).

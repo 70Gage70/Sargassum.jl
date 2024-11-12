@@ -225,7 +225,7 @@ function add_field!(
 
     for idx in eachindex(field)
         val = field[idx]
-        field[idx] = (val in missing_vals) ? missings_replacement : unit_factor*(scale_factor*val + add_offset)
+        field[idx] = (val in missing_vals || isnan(val)) ? missings_replacement : unit_factor*(scale_factor*val + add_offset)
     end
 
     (take_axes !== nothing) && (field = field[take_axes...])

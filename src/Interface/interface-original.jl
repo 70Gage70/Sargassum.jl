@@ -793,7 +793,7 @@ let
 	This is a [Pluto notebook](https://plutojl.org/) powered by the [Julia programming language](https://julialang.org/).
 
 	- [GitHub](https://github.com/70Gage70/Sargasum.jl)
-	- [Citation](https://doi.org/10.1093/pnasnexus/pgae451)
+	- [Citation](https://70gage70.github.io/Sargassum.jl/dev/cite)
 	
 	$(restart_button)
 	"""
