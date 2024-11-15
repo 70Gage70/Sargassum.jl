@@ -1,7 +1,7 @@
 name = "Sargassum"
 uuid = "022a0cfc-64d6-4a4c-8da6-19b349a396b3"
 authors = ["Gage Bonner <gage.bonner@gmail.com>"]
-version = "0.3.1"
+version = "0.3.2"
 
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
@@ -44,7 +44,7 @@ BufferedStreams = "1.2.2"
 CairoMakie = "0.12"
 CodecZlib = "0.7.4"
 ColorSchemes = "3.25"
-Colors = "0.12.11"
+Colors = "0.12.11, 0.13"
 Crayons = "4.1.1"
 Distributions = "0.25.105"
 GeoDatasets = "0.1.8"

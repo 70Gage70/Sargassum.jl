@@ -1,17 +1,19 @@
 ### A Pluto.jl notebook ###
-# v0.20.0
+# v0.20.3
 
 using Markdown
 using InteractiveUtils
 
 # This Pluto notebook uses @bind for interactivity. When running this notebook outside of Pluto, the following 'mock version' of @bind gives bound variables a default value (instead of an error).
 macro bind(def, element)
+    #! format: off
     quote
         local iv = try Base.loaded_modules[Base.PkgId(Base.UUID("6e696c72-6542-2067-7265-42206c756150"), "AbstractPlutoDingetjes")].Bonds.initial_value catch; b -> missing; end
         local el = $(esc(element))
         global $(esc(def)) = Core.applicable(Base.get, el) ? Base.get(el) : iv(el)
         el
     end
+    #! format: on
 end
 
 # ╔═╡ 589f251d-a2df-4879-9933-4deb95a8003a
@@ -921,11 +923,16 @@ let
 	Select the `".nc"` type to export binned trajectory data in a [NetCDF file format](https://github.com/JuliaGeo/NetCDF.jl). Choose this option if you primarily need distribution data.
 
 	Select `".png"` to output the figure itself.
+
+	Check "With parameters" to output the physics/biology parameters as well as the trajectories. These are incompatible wit `".nc"` files, so a separate `.mat` file is created in that case.
 	"""
 	
 	export_blurb = md"""
 	$(details("❓ EXPORT HELP ❓", export_details))
 	Type: $(@bind export_type Select([".mat", ".nc", ".png"], default = ".mat"))
+	
+	With parameters: $(@bind export_parameters CheckBox(default = true))
+	
 	$(@bind export_button CounterButton("EXPORT"))
 	"""
 	
@@ -939,7 +946,7 @@ let
 		padding: 1px;
 		text-align: left;
 		z-index: 101;
-		max-width: 20%;
+		max-width: 30%;
 		background-color: var(--main-bg-color);">
 		$(export_blurb)
 		</div>"""
@@ -1204,12 +1211,15 @@ let
 	
 			if export_type == ".mat"
 				rtr2mat(sol, outfile * ".mat")
+				export_parameters && Sargassum._rp2mat!(rp, outfile * ".mat")
 			elseif export_type == ".nc"
 				lon_bins = range(-100.0, -40.0, length = 134)
 				lat_bins = range(0.0, 40.0, length = 64)
 				rtr2nc(sol, outfile * ".nc", lon_bins, lat_bins)
+				export_parameters && Sargassum._rp2mat(rp, outfile * ".mat", force = true)
 			elseif export_type == ".png"
 				save(outfile * ".png", fig)
+				export_parameters && Sargassum._rp2mat(rp, outfile * ".mat", force = true)
 			end
 		end
 	end

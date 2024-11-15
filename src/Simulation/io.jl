@@ -165,3 +165,102 @@ function rtr2nc(rtr::RaftTrajectory, outfile::String, dist::SargassumDistributio
 
     return nothing
 end
+
+function _dict(cp::ClumpParameters)
+    Dict(
+        "cp_alpha" => cp.α,
+        "cp_tau" => cp.τ,
+        "cp_R" => cp.R,
+        "cp_omega" => cp.Ω,
+        "cp_sigma" => cp.σ
+    )
+end
+
+function _dict(ics::InitialConditions)
+    Dict(
+        "ics_ics" => ics.ics,
+        "ics_tspan" => ics.tspan |> collect # .mat files need vectors
+    )
+end
+
+function _dict(spring::AbstractSpring)
+    fnames = fieldnames(typeof(spring)) |> n -> filter(x -> x != :k, n)
+    d = Dict{String, Any}()
+    for n in fnames
+        d["sp_" * string(n)] = getfield(spring, n)
+    end
+    d["sp_k_at_1"] = spring.k(1.0)
+    d["sp_type"] = string(typeof(spring).name.name)
+
+    return d
+end
+
+function _dict(cons::AbstractConnections)
+    fnames = fieldnames(typeof(cons)) |> n -> filter(x -> x != :connections, n)
+    d = Dict{String, Any}()
+    for n in fnames
+        d["connecs_" * string(n)] = getfield(cons, n)
+    end
+    d["connecs_type"] = string(typeof(cons))
+    return d
+end
+
+function _dict(gd_model::ImmortalModel)
+    return Dict("gd_model" => "ImmortalModel")
+end
+
+function _dict(gd_model::BrooksModel)
+    p = gd_model.params
+    exclusions = [:temp, :no3, :dSdt]
+    fnames = fieldnames(typeof(p)) |> n -> filter(x -> !(x in exclusions), n)
+    d = Dict{String, Any}()
+    for n in fnames
+        d["gd_" * string(n)] = getfield(p, n)
+    end
+    d["gd_type"] = "BrooksModel"
+    return d
+end
+
+function _dict(rp::RaftParameters)
+    d = Dict{String, Any}()
+    merge!(d, _dict(rp.clumps))
+    merge!(d, _dict(rp.ics))
+    merge!(d, _dict(rp.springs))
+    merge!(d, _dict(rp.connections))
+    merge!(d, _dict(rp.gd_model))
+    d["geometry"] = rp.geometry
+    d["n_clumps_max"] = rp.n_clumps_max
+    d["INFO_GENERAL"] = "connecs_ = AbstractConnections, \
+        cp_ = ClumpParameters, \
+        gd_model = AbstractGrowthDeathModel, \
+        geometry = RaftParameters.geometry, \
+        ics_ = InitialConditions, \
+        n_clumps_max = RaftParameters.n_clumps_max, \
+        sp_ = AbstractSpring"
+    d["INFO_SPECIFIC"] = "sp_k_at_1 is the spring stiffness function evaluated with an argument of 1."
+
+    return d
+end
+
+# create a mat file with "serialized" values of a `RaftParameters` object
+function _rp2mat(rp::RaftParameters, outfile::String; force::Bool = false)
+
+    @argcheck endswith(outfile, ".mat") "Must output a .mat file."
+    !force && @argcheck !isfile(outfile) "This file already exists. Pass `force = true` to overwrite it."
+
+    isfile(outfile) && rm(outfile)
+    matwrite(outfile, _dict(rp))
+
+    return nothing
+end
+
+# append to a mat file the "serialized" values of a `RaftParameters` object
+function _rp2mat!(rp::RaftParameters, outfile::String)
+    @argcheck endswith(outfile, ".mat") "The target file must be a .mat file."
+    @argcheck isfile(outfile) "The target file must already exist."
+
+    d = merge(matread(outfile), _dict(rp))
+    matwrite(outfile, d)
+
+    return nothing
+end
