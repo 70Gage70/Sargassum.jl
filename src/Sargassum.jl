@@ -105,7 +105,7 @@ function __init__()
     version_minor = VERSION.minor
     if version_minor < 10
         @warn "Sargassum.jl should be used with Julia version 1.10 or higher."
-    elseif version_minor == 10
+    else 
         try
             itps_load()
         catch
@@ -115,15 +115,6 @@ function __init__()
                 nothing
             end
         end
-    elseif version_minor >= 11
-        @warn "There is currently an issue on Julia versions 1.11.x related to initialization of Julia packages that makes automatic loading of \
-        interpolants difficult. 
-        
-        https://github.com/JuliaLang/julia/issues/56077
-
-        The only implication for users of Sargassum.jl is that you have to use `itps_load()` \
-        manually when you first load the package if you want the default interpolants. If the default interpolants have \
-        not been created, run `itps_default_construct(download = true)`. Alternatively, downgrade to Julia 1.10 until the issue is resolved."
     end
 
     ### Interface
